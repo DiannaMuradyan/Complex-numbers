@@ -16,8 +16,13 @@ std::istream& atlas3::operator>>(std::istream& is , atlas3::Complex& num) {
     std::string str;
     std::cin>>str;
     std::string tmp(str);
-
-    int index = find_the_sign(str);
+    
+    int index = 0;
+    try {
+        index = find_the_sign(str);
+    } catch (const std::runtime_error& e) {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
     
     tmp.resize(index);
     num.setReal(std::stod(tmp));
@@ -194,13 +199,10 @@ double atlas3::Complex::phase() const {
 
 int atlas3::find_the_sign(std::string& str) {
     int index = 0;
-    if ((index = str.find('+')) > -1) {
-        return index;
-    }
-    else if ((index = str.find('-')) > -1) {
+    if ((index = str.find('+')) != std::string::npos || (index = str.find('-')) != std::string::npos) {
         return index;
     }
     else {
-        throw std::abort;
+        throw std::runtime_error("Invalid expression!");
     }
 }
